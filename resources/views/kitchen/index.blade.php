@@ -32,26 +32,30 @@
 <body class="min-h-screen">
 
 <header style="background: linear-gradient(90deg, #1C0A00, #2d1207); border-bottom: 1px solid rgba(255,255,255,.08);"
-    class="px-6 py-4 flex items-center justify-between sticky top-0 z-20">
-    <div class="flex items-center gap-4">
-        <span class="text-2xl">☕</span>
-        <div>
-            <h1 class="font-bold text-white text-lg leading-tight">Kitchen Display</h1>
-            <p class="text-amber-400 text-xs">SAVANA Coffee · {{ auth()->user()->nama }} ({{ auth()->user()->peran_label }})</p>
+    class="px-4 py-3 sticky top-0 z-20">
+    {{-- Row 1: Brand + Logout --}}
+    <div class="flex items-center justify-between mb-2">
+        <div class="flex items-center gap-3 min-w-0">
+            <span class="text-xl shrink-0">☕</span>
+            <div class="min-w-0">
+                <h1 class="font-bold text-white text-base leading-tight">Kitchen Display</h1>
+                <p class="text-amber-400 text-xs truncate">SAVANA Coffee · {{ auth()->user()->nama }}</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-3 shrink-0">
+            <span class="text-gray-400 text-xs">
+                Refresh <span id="countdown" class="font-bold text-white">8</span>s
+            </span>
+            <form method="POST" action="{{ route('logout') }}">@csrf
+                <button class="text-xs text-gray-400 hover:text-white border border-white/20 px-2.5 py-1 rounded-lg transition">Keluar</button>
+            </form>
         </div>
     </div>
-    <div class="flex items-center gap-5">
-        <div class="flex gap-2 text-xs font-semibold">
-            <span class="px-3 py-1.5 rounded-full bg-red-500/20 text-red-400 border border-red-500/30">● Baru</span>
-            <span class="px-3 py-1.5 rounded-full bg-yellow-500/20 text-yellow-400 border border-yellow-500/30">● Dimasak</span>
-            <span class="px-3 py-1.5 rounded-full bg-green-500/20 text-green-400 border border-green-500/30">● Siap</span>
-        </div>
-        <div class="text-gray-400 text-sm">
-            Refresh <span id="countdown" class="font-bold text-white">8</span>s
-        </div>
-        <form method="POST" action="{{ route('logout') }}">@csrf
-            <button class="text-xs text-gray-400 hover:text-white border border-white/10 px-3 py-1.5 rounded-lg transition">Keluar</button>
-        </form>
+    {{-- Row 2: Status badges --}}
+    <div class="flex gap-2 text-xs font-semibold overflow-x-auto pb-0.5" style="scrollbar-width:none">
+        <span class="px-2.5 py-1 rounded-full bg-red-500/20 text-red-400 border border-red-500/30 shrink-0">● Baru</span>
+        <span class="px-2.5 py-1 rounded-full bg-yellow-500/20 text-yellow-400 border border-yellow-500/30 shrink-0">● Dimasak</span>
+        <span class="px-2.5 py-1 rounded-full bg-green-500/20 text-green-400 border border-green-500/30 shrink-0">● Siap</span>
     </div>
 </header>
 

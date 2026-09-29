@@ -26,8 +26,8 @@
             overflow-y: hidden;
         }
 
-        /* ── MOBILE: drawer (translate) ── */
-        @media (max-width: 767px) {
+        /* ── MOBILE & TABLET: drawer (translate) ── */
+        @media (max-width: 1023px) {
             #sidebar {
                 width: 270px !important;
                 transition: transform 0.25s cubic-bezier(.4,0,.2,1);
@@ -36,18 +36,8 @@
             #sidebar.mobile-open { transform: translateX(0); }
             #main-wrap { margin-left: 0 !important; }
             #sidebar-backdrop { display: block; }
-        }
-
-        /* ── TABLET: drawer same as mobile ── */
-        @media (min-width: 768px) and (max-width: 1023px) {
-            #sidebar {
-                width: 270px !important;
-                transition: transform 0.25s cubic-bezier(.4,0,.2,1);
-                transform: translateX(-100%);
-            }
-            #sidebar.mobile-open { transform: translateX(0); }
-            #main-wrap { margin-left: 0 !important; }
-            #sidebar-backdrop { display: block; }
+            /* iOS body scroll lock */
+            body.sidebar-open { overflow: hidden; position: fixed; width: 100%; }
         }
 
         /* ── DESKTOP: width-based collapsible ── */
@@ -328,15 +318,20 @@
     }
 
     /* ── Mobile/Tablet: translate-based drawer ── */
+    let scrollY = 0;
     function openMobile() {
+        scrollY = window.scrollY;
         sidebar.classList.add('mobile-open');
         backdrop.classList.add('visible');
-        document.body.style.overflow = 'hidden';
+        document.body.classList.add('sidebar-open');
+        document.body.style.top = `-${scrollY}px`;
     }
     function closeMobile() {
         sidebar.classList.remove('mobile-open');
         backdrop.classList.remove('visible');
-        document.body.style.overflow = '';
+        document.body.classList.remove('sidebar-open');
+        document.body.style.top = '';
+        window.scrollTo(0, scrollY);
     }
 
     window.closeSidebar = closeMobile;
