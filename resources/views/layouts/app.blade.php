@@ -85,7 +85,7 @@
             {{-- Toggle button doubles as brand icon when expanded --}}
             <div class="brand-text min-w-0 overflow-hidden">
                 <p class="font-bold text-white text-sm leading-tight whitespace-nowrap">SAVANA Coffee</p>
-                <p class="text-amber-400 text-xs whitespace-nowrap">Laporan</p>
+                <p class="text-amber-400 text-xs whitespace-nowrap">Gudang Bahan Baku</p>
             </div>
         </div>
     </div>
