@@ -4,8 +4,8 @@
 @section('subheader', 'Semua sesi yang telah selesai')
 
 @section('content')
-<div class="bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-100">
-    <table class="w-full text-sm">
+<div class="bg-white rounded-2xl shadow-sm overflow-x-auto border border-gray-100">
+    <table class="w-full text-sm min-w-[760px]">
         <thead>
             <tr style="background:linear-gradient(135deg,#1C0A00,#2d1207)">
                 <th class="px-5 py-3.5 text-left text-xs font-bold text-amber-300 uppercase tracking-wider">No. Faktur</th>

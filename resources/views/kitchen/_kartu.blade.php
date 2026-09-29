@@ -5,11 +5,11 @@
         'siap'    => 'kartu-siap',
         default   => '',
     };
-    $badgeCls = match($p->status) {
-        'baru'    => 'badge-baru',
-        'dimasak' => 'badge-dimasak',
-        'siap'    => 'badge-siap',
-        default   => 'background:#6b7280',
+    $pillCls = match($p->status) {
+        'baru'    => 'pill-baru',
+        'dimasak' => 'pill-dimasak',
+        'siap'    => 'pill-siap',
+        default   => '',
     };
     $lbl = match($p->status) {
         'baru'    => 'Baru Masuk',
@@ -17,18 +17,14 @@
         'siap'    => 'Siap Disajikan',
         default   => $p->status_label,
     };
-    $icon = match($p->status) {
-        'baru' => '🔴', 'dimasak' => '🟡', 'siap' => '🟢', default => '⚪',
-    };
 @endphp
-<div class="border-2 rounded-2xl p-4 {{ $borderCls }}" data-id="{{ $p->id }}">
+<div class="kartu rounded-2xl p-4 {{ $borderCls }}" data-id="{{ $p->id }}">
     <div class="flex items-start justify-between mb-3">
         <div>
-            <span class="text-xs font-bold {{ $badgeCls }} px-2.5 py-1 rounded-full">{{ $lbl }}</span>
+            <span class="pill {{ $pillCls }}"><span class="pill-dot"></span>{{ $lbl }}</span>
             <h3 class="font-extrabold text-white text-xl mt-2 leading-tight">{{ $p->meja->nama }}</h3>
             <p class="text-gray-500 text-xs mt-0.5">{{ $p->nomor_pesanan }} · {{ $p->dipesan_pada?->format('H:i') }}</p>
         </div>
-        <span class="text-2xl">{{ $icon }}</span>
     </div>
 
     <div class="border-t border-white/10 pt-3 mb-3 space-y-2">
@@ -53,7 +49,7 @@
 
     @if($p->catatan)
     <div class="bg-yellow-500/10 border border-yellow-500/20 rounded-lg px-3 py-2 mb-3 text-xs text-yellow-300">
-        📝 {{ $p->catatan }}
+        Catatan: {{ $p->catatan }}
     </div>
     @endif
 

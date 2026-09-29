@@ -52,8 +52,8 @@
 @endif
 
 {{-- Tabel Bahan Baku --}}
-<div class="bg-white rounded-3xl shadow-sm overflow-hidden">
-    <table class="w-full text-sm">
+<div class="bg-white rounded-3xl shadow-sm overflow-x-auto">
+    <table class="w-full text-sm min-w-[780px]">
         <thead>
             <tr style="background:linear-gradient(135deg,#1C0A00,#2d1207)">
                 <th class="text-left px-5 py-3.5 text-white font-semibold">Nama Bahan</th>

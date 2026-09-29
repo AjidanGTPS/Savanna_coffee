@@ -11,18 +11,25 @@
     <style>
         body { font-family: 'Inter', sans-serif; background: #0f1117; }
 
-        .kartu-baru    { border-color: #ef4444; background: linear-gradient(145deg, #1a0505, #1f0808); }
-        .kartu-dimasak { border-color: #f59e0b; background: linear-gradient(145deg, #1a1200, #1f1500); }
-        .kartu-siap    { border-color: #22c55e; background: linear-gradient(145deg, #021408, #041a0c); }
+        /* Cards: flat dark surface + colored left accent (no gradient noise) */
+        .kartu       { background: #171a21; border: 1px solid #262a33; border-left-width: 4px; }
+        .kartu-baru    { border-left-color: #ef4444; }
+        .kartu-dimasak { border-left-color: #f59e0b; }
+        .kartu-siap    { border-left-color: #22c55e; }
 
-        .badge-baru    { background: #ef4444; color: #fff; }
-        .badge-dimasak { background: #f59e0b; color: #000; }
-        .badge-siap    { background: #22c55e; color: #fff; }
+        /* Status pill: fixed height + inline-flex keeps dot/text/border perfectly symmetric */
+        .pill { display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 10px;
+            border-radius: 999px; font-size: 11px; font-weight: 700; line-height: 1; white-space: nowrap; }
+        .pill-dot { width: 6px; height: 6px; border-radius: 999px; flex-shrink: 0; }
 
-        @keyframes pulse-red { 0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,.4)} 50%{box-shadow:0 0 0 8px rgba(239,68,68,0)} }
-        .kartu-baru { animation: pulse-red 2.5s infinite; }
+        .pill-baru    { background: rgba(239,68,68,.14); color: #f87171; border: 1px solid rgba(239,68,68,.3); }
+        .pill-baru .pill-dot    { background: #f87171; }
+        .pill-dimasak { background: rgba(245,158,11,.14); color: #fbbf24; border: 1px solid rgba(245,158,11,.3); }
+        .pill-dimasak .pill-dot { background: #fbbf24; }
+        .pill-siap    { background: rgba(34,197,94,.14); color: #4ade80; border: 1px solid rgba(34,197,94,.3); }
+        .pill-siap .pill-dot    { background: #4ade80; }
 
-        .btn-aksi { padding: 8px 0; border-radius: 8px; font-size: 13px; font-weight: 700;
+        .btn-aksi { padding: 10px 0; border-radius: 8px; font-size: 13px; font-weight: 700;
             cursor: pointer; transition: opacity .15s, transform .1s; border: none; width: 100%; color: #fff; }
         .btn-aksi:hover { opacity: .9; }
         .btn-aksi:active { transform: scale(.97); }
@@ -52,10 +59,10 @@
         </div>
     </div>
     {{-- Row 2: Status badges --}}
-    <div class="flex gap-2 text-xs font-semibold overflow-x-auto pb-0.5" style="scrollbar-width:none">
-        <span class="px-2.5 py-1 rounded-full bg-red-500/20 text-red-400 border border-red-500/30 shrink-0">● Baru</span>
-        <span class="px-2.5 py-1 rounded-full bg-yellow-500/20 text-yellow-400 border border-yellow-500/30 shrink-0">● Dimasak</span>
-        <span class="px-2.5 py-1 rounded-full bg-green-500/20 text-green-400 border border-green-500/30 shrink-0">● Siap</span>
+    <div class="flex gap-2 overflow-x-auto pb-0.5" style="scrollbar-width:none">
+        <span class="pill pill-baru shrink-0"><span class="pill-dot"></span>Baru</span>
+        <span class="pill pill-dimasak shrink-0"><span class="pill-dot"></span>Dimasak</span>
+        <span class="pill pill-siap shrink-0"><span class="pill-dot"></span>Siap</span>
     </div>
 </header>
 
@@ -64,9 +71,9 @@
         @forelse($pesanan as $p)
         @include('kitchen._kartu', ['p' => $p])
         @empty
-        <div id="kosong" class="col-span-full flex flex-col items-center justify-center py-28 text-gray-600">
-            <p class="text-7xl mb-4">🎉</p>
-            <p class="text-2xl font-bold text-gray-400">Semua Beres!</p>
+        <div id="kosong" class="col-span-full flex flex-col items-center justify-center text-center text-gray-600" style="min-height:calc(100vh - 200px)">
+            <p class="text-6xl mb-4">✓</p>
+            <p class="text-2xl font-bold text-gray-300">Semua Beres</p>
             <p class="text-sm text-gray-600 mt-1">Tidak ada pesanan yang perlu diproses</p>
         </div>
         @endforelse
@@ -78,7 +85,7 @@ const CSRF = document.querySelector('meta[name="csrf-token"]').content;
 let sebelumnya = new Set(@json($pesanan->pluck('id')));
 
 const warnaBorder = { baru: 'kartu-baru', dimasak: 'kartu-dimasak', siap: 'kartu-siap' };
-const warnaBadge  = { baru: 'badge-baru', dimasak: 'badge-dimasak', siap: 'badge-siap' };
+const warnaPill   = { baru: 'pill-baru', dimasak: 'pill-dimasak', siap: 'pill-siap' };
 const labelStatus = { baru: 'Baru Masuk', dimasak: 'Dimasak', siap: 'Siap Disajikan' };
 const aksiMap = {
     baru:    [{ status:'dimasak', label:'▶ Mulai Masak', bg:'#f59e0b', color:'#000' }, { status:'dibatalkan', label:'✕ Batalkan', bg:'#4b5563', color:'#fff' }],
@@ -95,18 +102,17 @@ function waktuSingkat(iso) {
 function kartuHTML(p) {
     const aksi = aksiMap[p.status] || [];
     const borderCls = warnaBorder[p.status] || '';
-    const badgeCls  = warnaBadge[p.status] || '';
+    const pillCls   = warnaPill[p.status] || '';
     const lbl       = labelStatus[p.status] || p.status_label;
 
     return `
-    <div class="border-2 rounded-2xl p-4 ${borderCls}" data-id="${p.id}">
+    <div class="kartu rounded-2xl p-4 ${borderCls}" data-id="${p.id}">
         <div class="flex items-start justify-between mb-3">
             <div>
-                <span class="text-xs font-bold ${badgeCls} px-2.5 py-1 rounded-full">${lbl}</span>
+                <span class="pill ${pillCls}"><span class="pill-dot"></span>${lbl}</span>
                 <h3 class="font-extrabold text-white text-xl mt-2 leading-tight">${p.meja}</h3>
                 <p class="text-gray-500 text-xs mt-0.5">${p.nomor_pesanan} · ${waktuSingkat(p.dipesan_pada)}</p>
             </div>
-            <span class="text-2xl">${p.status === 'baru' ? '🔴' : p.status === 'dimasak' ? '🟡' : '🟢'}</span>
         </div>
 
         <div class="border-t border-white/10 pt-3 mb-3 space-y-2">
@@ -121,7 +127,7 @@ function kartuHTML(p) {
             </div>`).join('')}
         </div>
 
-        ${p.catatan ? `<div class="bg-yellow-500/10 border border-yellow-500/20 rounded-lg px-3 py-2 mb-3 text-xs text-yellow-300">📝 ${p.catatan}</div>` : ''}
+        ${p.catatan ? `<div class="bg-yellow-500/10 border border-yellow-500/20 rounded-lg px-3 py-2 mb-3 text-xs text-yellow-300">Catatan: ${p.catatan}</div>` : ''}
 
         <div class="flex flex-col gap-2">
             ${aksi.map(a => `<button onclick="updateStatus(${p.id},'${a.status}',this)" class="btn-aksi" style="background:${a.bg};color:${a.color}">${a.label}</button>`).join('')}
@@ -152,9 +158,9 @@ async function poll() {
         sebelumnya = new Set(data.map(p => p.id));
 
         if (!data.length) {
-            grid.innerHTML = `<div id="kosong" class="col-span-full flex flex-col items-center justify-center py-28 text-gray-600">
-                <p class="text-7xl mb-4">🎉</p>
-                <p class="text-2xl font-bold text-gray-400">Semua Beres!</p>
+            grid.innerHTML = `<div id="kosong" class="col-span-full flex flex-col items-center justify-center text-center text-gray-600" style="min-height:calc(100vh - 200px)">
+                <p class="text-6xl mb-4">✓</p>
+                <p class="text-2xl font-bold text-gray-300">Semua Beres</p>
                 <p class="text-sm text-gray-600 mt-1">Tidak ada pesanan yang perlu diproses</p>
             </div>`;
             return;

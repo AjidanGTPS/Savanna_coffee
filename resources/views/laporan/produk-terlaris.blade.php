@@ -4,14 +4,14 @@
 @section('subheader', 'Ranking produk berdasarkan penjualan')
 
 @section('content')
-<div class="flex flex-wrap items-center gap-3 mb-6">
+<div class="mb-6 space-y-3">
     <a href="{{ route('laporan.ringkasan', request()->query()) }}"
-        class="text-sm text-gray-400 hover:text-gray-700 flex items-center gap-1.5 transition">
+        class="text-sm text-gray-400 hover:text-gray-700 inline-flex items-center gap-1.5 transition">
         ← Ringkasan
     </a>
-    <form method="GET" class="flex items-center gap-2 ml-auto">
+    <form method="GET" class="flex flex-wrap items-center gap-2">
         <select name="bulan"
-            class="border-2 border-gray-200 focus:border-amber-500 rounded-xl px-3 py-2 text-sm outline-none bg-white">
+            class="flex-1 min-w-0 border-2 border-gray-200 focus:border-amber-500 rounded-xl px-3 py-2 text-sm outline-none bg-white">
             @foreach(range(1,12) as $b)
             <option value="{{ $b }}" {{ $bulan == $b ? 'selected' : '' }}>
                 {{ DateTime::createFromFormat('!m', $b)->format('F') }}
@@ -25,15 +25,15 @@
             @endforeach
         </select>
         <button type="submit"
-            class="px-4 py-2 rounded-xl text-sm font-bold text-white transition"
+            class="px-4 py-2 rounded-xl text-sm font-bold text-white transition shrink-0"
             style="background:linear-gradient(135deg,#d97706,#ea580c)">
             Filter
         </button>
     </form>
 </div>
 
-<div class="bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-100">
-    <table class="w-full text-sm">
+<div class="bg-white rounded-2xl shadow-sm overflow-x-auto border border-gray-100">
+    <table class="w-full text-sm min-w-[560px]">
         <thead>
             <tr style="background:linear-gradient(135deg,#1C0A00,#2d1207)">
                 <th class="px-5 py-3.5 text-left text-xs font-bold text-amber-300 uppercase tracking-wider w-14">#</th>
